@@ -7,56 +7,49 @@
 *
 *
 */
-
-
-
-#include <iostream>
 #include <string>
+#include <iostream>
 #include "ItemToPurchase.h"
 #include "ItemToPurchase.cpp"
-using namespace std;
 
-int main() {
+int main(){
+//Variable initalization
+    std::string item;
+    double itemPrice;
+    int itemQuantity;
     ItemToPurchase item1;
     ItemToPurchase item2;
+//User Input
+//Item 1
+    std::cout << "Item 1\nEnter the item name:\n";
+        getline(std::cin, item);
+            item1.SetName(item); //Name
 
-    string name;
-    int price, quantity;
+    std::cout << "Enter the item price\n";
+        std::cin >> itemPrice;
+            item1.SetPrice(itemPrice); //Price
+            
+    std::cout << "Enter the item quantity:\n";
+       std::cin >> itemQuantity;
+            item1.SetQuantity(itemQuantity); //Quantity
+        
+    std::cin.ignore();
+//Item 2 
+    std::cout << "Item 2\nEnter the item name:\n";
+        getline(std::cin, item);
+            item2.SetName(item); //Name
 
-    // Prompt user for first item
-    cout << "Item 1\nEnter the item name:" << endl;
-    getline(cin, name);
-    item1.SetName(name);
-    
-    cout << "Enter the item price:\n$";
-    cin >> price;
-    item1.SetPrice(price);
-    
-    cout << "Enter the item quantity:" << endl;
-    cin >> quantity;
-    item1.SetQuantity(quantity);
-    cin.ignore(); // Ignore newline character left by cin
-      
-    // Prompt user for second item
-    cout << "\nItem 2\nEnter the item name:" << endl;
-    getline(cin, name);
-    item2.SetName(name);
-    
-    cout << "Enter the item price:\n$";
-    cin >> price;
-    item2.SetPrice(price);
-    
-    cout << "Enter the item quantity:" << endl;
-    cin >> quantity;
-    item2.SetQuantity(quantity);
+    std::cout << "Enter the item price\n";
+        std::cin >> itemPrice;
+            item2.SetPrice(itemPrice); //Price
 
-    cout << endl << "TOTAL COST" << endl;
-    // Output item1 details
-    cout << item1.GetName() << " " << item1.GetQuantity() << " @ $" << item1.GetPrice() << " = $" << item1.GetTotal() << endl;
-    // Output item2 details
-    cout << item2.GetName() << " " << item2.GetQuantity() << " @ $" << item2.GetPrice() << " = $" << item2.GetTotal() << endl;
-    //Total
-    cout << endl << "Total: $" << item1.GetTotal() + item2.GetTotal() << endl;
-    
-    return 0;
+    std::cout << "Enter the item quantity:\n";
+       std::cin >> itemQuantity;
+            item2.SetQuantity(itemQuantity); //Quantity
+
+//Output
+    std::cout << "TOTAL COST\nTax Rate: 8.25%\n";
+    item1.Print();
+    item2.Print();
+
 }
