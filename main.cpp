@@ -1,55 +1,98 @@
-/*
-*
-*   Author: Tyler Scotti
-*   Description: This program is a simple online shopping cart simulator. It has the capabilities to hold up to two items in a user's cart and will display the total cost.
-*   Future plans: Build on this program to allow the user to add more items (up to 99?) using a vector and displaying the total of the entire cart rather than a hard limit of two items.
-*
-*
-*
-*/
+#include "ShoppingCart.h"
 #include <string>
 #include <iostream>
-#include "ItemToPurchase.h"
-#include "ItemToPurchase.cpp"
+#include <iomanip>
 
-int main(){
-//Variable initalization
-    std::string item;
-    double itemPrice;
-    int itemQuantity;
-    ItemToPurchase item1;
-    ItemToPurchase item2;
-//User Input
-//Item 1
-    std::cout << "Item 1\nEnter the item name:\n";
-        getline(std::cin, item);
-            item1.SetName(item); //Name
+ShoppingCart::ShoppingCart() : customerName("None"), currentDate("January 1st, 2016") {} //Default Constructor
 
-    std::cout << "Enter the item price\n";
-        std::cin >> itemPrice;
-            item1.SetPrice(itemPrice); //Price
-            
-    std::cout << "Enter the item quantity:\n";
-       std::cin >> itemQuantity;
-            item1.SetQuantity(itemQuantity); //Quantity
-        
-    std::cin.ignore();
-//Item 2 
-    std::cout << "Item 2\nEnter the item name:\n";
-        getline(std::cin, item);
-            item2.SetName(item); //Name
+ShoppingCart::ShoppingCart(std::string customerName, std::string currentDate){ 
+    this->customerName = customerName;
+    this->currentDate = currentDate;
+}
 
-    std::cout << "Enter the item price\n";
-        std::cin >> itemPrice;
-            item2.SetPrice(itemPrice); //Price
+void ShoppingCart::AddItem(ItemToPurchase& itemName){
+    cartItems.push_back(itemName); //Adds item to the vector
+}
 
-    std::cout << "Enter the item quantity:\n";
-       std::cin >> itemQuantity;
-            item2.SetQuantity(itemQuantity); //Quantity
+inline void ShoppingCart::SetCustomerName(std::string& name){ this->customerName = name; } //Sets customer name
 
-//Output
-    std::cout << "TOTAL COST\nTax Rate: 8.25%\n";
-    item1.Print();
-    item2.Print();
+std::string ShoppingCart::GetCustomerName(){ return customerName; } //Gets customer name
+
+inline void ShoppingCart::SetDate(std::string& date){ this->currentDate = date; } //Sets Date
+
+std::string ShoppingCart::GetDate(){ return currentDate; } //Gets date
+
+void ShoppingCart::RemoveItem(std::string&  itemName){
+    if(cartItems.size() > 0){
+        for(int i = 0; i < cartItems.size(); i++){
+            bool found = false;
+            if (cartItems.at(i).GetName().compare(itemName) == 0){ //If any element in cartItems is equal to the parameter, it is in the list, thus is removed.
+                cartItems.erase(cartItems.begin() + i); //Erases index i from list.
+                found = true;
+                std::cout << std::endl << itemName << " has been removed from the list." << std::endl;
+            } else if (found != true){
+                std::cout << "\nItem not found in cart. Nothing removed." << std::endl; //If for loop iterates through them all and doesn't find anything, then item can't be in cart
+            }
+        }
+    } else {
+        std::cout << "\nNo items in the list." << std::endl;
+    }
+}
+
+void ShoppingCart::Print(){
+    std::cout << "\nCustomer name: " << GetCustomerName() <<"\nToday's Date: " << GetDate() << std::endl;
+}
+
+void ShoppingCart::PrintDescriptions(){
+    std::cout << customerName << "'s Shopping Cart - " << currentDate << std::endl;
+    std::cout << "Item Descriptions\n" << std::endl;
+    for(int i = 0; i < cartItems.size(); i++){
+        cartItems.at(i).PrintItemDescription();
+    }
+    std::cout << std::endl;
+}
+
+void ShoppingCart::ModifyItem(std::string& itemName, int itemQuantity){
+    if(cartItems.size() > 0){
+        for(int i = 0; i < cartItems.size(); i++){
+            if(cartItems.at(i).GetName().compare(itemName) == 0){ //Finds the index of the item name the user typed in.
+                cartItems.at(i).SetQuantity(itemQuantity);//Changes index of the item name the user typed in to the new quantity the provided.
+            } else {
+                std::cout << "\nItem not found in cart. Nothing modified." << std::endl; //If item name user entered isn't found, it isn't in the list.
+            }
+        }
+    } else {
+        std::cout << "\nItem not found in cart. Nothing modified." << std::endl; //In case anyone tries to modify an item in an empty list
+    }
 
 }
+
+int ShoppingCart::GetNumItemsInCart(){ //Returns the amount of items in cart.
+    int totalQuantity = 0;
+    for(int i = 0; i < cartItems.size(); i++){
+        totalQuantity += cartItems.at(i).GetQuantity();
+    }
+    return totalQuantity;
+}
+
+double ShoppingCart::GetCostOfCart(){ //Gets the total cost of the cart
+    double total = 0;
+    for(int i = 0; i < cartItems.size(); i++){
+        total = total +(cartItems.at(i).GetPrice() * cartItems.at(i).GetQuantity());
+    }
+    return total;
+}
+
+void ShoppingCart::PrintTotal(){ //Print
+    if(cartItems.size() > 0){
+        std::cout << customerName << "'s Shopping Cart - " << currentDate << std::endl;
+        std::cout << "Number of items: " << GetNumItemsInCart() << "\n\n";
+
+        for(int i = 0; i < cartItems.size(); i++){
+            cartItems.at(i).PrintItemCost();
+        }
+        std::cout << "\nTotal: $" << std::fixed << std::setprecision(2) << GetCostOfCart() << std::endl;
+    } else {
+        std::cout << "\nShopping cart is empty." << std::endl;
+    }
+} 
